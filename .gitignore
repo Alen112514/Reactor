@@ -1,0 +1,353 @@
+# =============================================================================
+# MCP Universal Router - Comprehensive .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Node.js Dependencies & Package Managers
+# -----------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager lock files (keep package-lock.json for reproducibility)
+yarn.lock
+pnpm-lock.yaml
+
+# -----------------------------------------------------------------------------
+# Python Dependencies & Virtual Environment
+# -----------------------------------------------------------------------------
+venv/
+env/
+ENV/
+.venv/
+.env/
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# -----------------------------------------------------------------------------
+# Environment Variables & Configuration
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+.envrc
+
+# API Keys & Secrets
+*secret*
+*SECRET*
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# -----------------------------------------------------------------------------
+# Build Outputs & Compiled Assets
+# -----------------------------------------------------------------------------
+dist/
+build/
+.next/
+.turbo/
+*.tsbuildinfo
+.nuxt/
+
+# Webpack
+.webpack/
+
+# Parcel
+.cache/
+.parcel-cache/
+
+# -----------------------------------------------------------------------------
+# Database Files
+# -----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+data/
+backups/
+
+# -----------------------------------------------------------------------------
+# Application-Specific Directories
+# -----------------------------------------------------------------------------
+# Browser automation screenshots
+screenshots/
+**/screenshots/*.png
+**/screenshots/*.jpg
+**/screenshots/*.jpeg
+
+# Web intelligence downloads
+downloads/
+**/downloads/*
+
+# MCP server logs
+mcp-servers/*/logs/
+**/logs/*.log
+
+# Cache directories
+.cache/
+
+# -----------------------------------------------------------------------------
+# Logs & Runtime Data
+# -----------------------------------------------------------------------------
+logs/
+*.log
+*.log.*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# -----------------------------------------------------------------------------
+# Development Tools & IDEs
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+.metadata/
+
+# Vim
+*.swp
+*.swo
+*.tmp
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# -----------------------------------------------------------------------------
+# Operating System Files
+# -----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Windows
+$RECYCLE.BIN/
+
+# Linux
+.directory
+
+# -----------------------------------------------------------------------------
+# Docker & Containerization
+# -----------------------------------------------------------------------------
+# Note: .dockerignore should NOT be ignored as it's part of the build config
+
+# Kubernetes secrets (local development)
+*.kubeconfig
+*-secret.yaml
+*-secret.yml
+
+# -----------------------------------------------------------------------------
+# Testing & Quality Assurance
+# -----------------------------------------------------------------------------
+# Test results
+test-results/
+test-reports/
+junit.xml
+coverage.xml
+.coverage
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# -----------------------------------------------------------------------------
+# Temporary Files & Directories
+# -----------------------------------------------------------------------------
+tmp/
+temp/
+.tmp/
+.temp/
+
+# System temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# -----------------------------------------------------------------------------
+# Package Manager Caches
+# -----------------------------------------------------------------------------
+.npm/
+.yarn/
+.pnpm-store/
+
+# -----------------------------------------------------------------------------
+# Cloud & Deployment
+# -----------------------------------------------------------------------------
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+
+# -----------------------------------------------------------------------------
+# Monitoring & Observability
+# -----------------------------------------------------------------------------
+# Prometheus data
+prometheus_data/
+
+# Grafana data
+grafana_data/
+
+# Jaeger traces
+jaeger_data/
+
+# -----------------------------------------------------------------------------
+# AI/ML & Data Files
+# -----------------------------------------------------------------------------
+# Model files
+*.model
+*.pkl
+*.joblib
+
+# Large data files
+*.csv
+*.json.gz
+*.parquet
+*.h5
+
+# Vector databases
+chroma_db/
+weaviate_data/
+
+# -----------------------------------------------------------------------------
+# Security & Authentication
+# -----------------------------------------------------------------------------
+# JWT keys
+*.jwt
+jwt_*.key
+
+# OAuth credentials
+oauth_credentials.json
+client_secrets.json
+
+# SSL certificates
+ssl/
+certificates/
+
+# -----------------------------------------------------------------------------
+# Local Development Overrides
+# -----------------------------------------------------------------------------
+# Local config overrides
+*local.json
+*local.yaml
+*local.yml
+local_settings.py
+
+# Development databases
+dev.db
+development.db
+local.db
+
+# -----------------------------------------------------------------------------
+# Backup Files
+# -----------------------------------------------------------------------------
+*.bak
+*.backup
+*.old
+*~
+
+# Git patches
+*.patch
+*.diff
+
+# -----------------------------------------------------------------------------
+# Large Binary Files
+# -----------------------------------------------------------------------------
+# Avoid committing large binary files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Media files (unless specifically needed)
+*.mp4
+*.avi
+*.mov
+*.mp3
+*.wav
+*.flac
+
+# PDF files (unless documentation)
+*.pdf
+
+# -----------------------------------------------------------------------------
+# Editor-specific Files
+# -----------------------------------------------------------------------------
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# -----------------------------------------------------------------------------
+# End of .gitignore
+# -----------------------------------------------------------------------------
