@@ -1,18 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { 
-  Wrench, 
-  Activity, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  ChevronDown, 
-  ChevronRight,
-  Bot,
-  Zap,
-  Info
-} from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+// No icon imports needed for text-only interface
 
 interface MCPTool {
   id: string
@@ -33,8 +22,10 @@ interface MCPToolsPanelProps {
 
 export default function MCPToolsPanel({ className = '', messages = [] }: MCPToolsPanelProps) {
   const [activeMCPTools, setActiveMCPTools] = useState<MCPTool[]>([])
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
   const [recentTools, setRecentTools] = useState<MCPTool[]>([])
+  const [toolExecutionDetailsExpanded, setToolExecutionDetailsExpanded] = useState(false)
+  const [detailedExecutions, setDetailedExecutions] = useState<any[]>([])
 
   // Extract MCP tool information from messages
   useEffect(() => {
@@ -87,20 +78,36 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
 
     setActiveMCPTools(tools)
     setRecentTools(completed.slice(-5)) // Keep last 5 completed tools
+    
+    // Extract detailed execution information for workflow and tool messages
+    const detailedExecs = messages.filter(msg => 
+      (msg.role === 'workflow' && msg.workflow_step) ||
+      (msg.role === 'tool' && msg.tool_name) ||
+      (msg.role === 'system' && msg.content?.includes('browser'))
+    ).map(msg => ({
+      ...msg,
+      displayName: msg.workflow_step ? 
+        msg.workflow_step.replace('_', ' ').toUpperCase() : 
+        (msg.tool_name || 'System Action'),
+      stepType: msg.workflow_step || 'tool_execution',
+      fullUrl: msg.content?.match(/https?:\/\/[^\s)]+/g)?.[0] || null
+    })).slice(-10) // Keep last 10 detailed executions
+    
+    setDetailedExecutions(detailedExecs)
   }, [messages])
 
-  const getStatusIcon = (status: string) => {
+  const getStatusText = (status: string) => {
     switch (status) {
       case 'starting':
-        return <Clock className="w-4 h-4 text-blue-400" />
+        return '[Starting]'
       case 'running':
-        return <Activity className="w-4 h-4 text-orange-400 animate-spin" />
+        return '[Running]'
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-400" />
+        return '[Done]'
       case 'error':
-        return <XCircle className="w-4 h-4 text-red-400" />
+        return '[Error]'
       default:
-        return <Wrench className="w-4 h-4 text-gray-400" />
+        return '[Pending]'
     }
   }
 
@@ -132,6 +139,11 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
 
   const hasAnyTools = activeMCPTools.length > 0 || recentTools.length > 0
 
+  const truncateUrl = (url: string, maxLength: number = 50) => {
+    if (!url || url.length <= maxLength) return url
+    return url.substring(0, maxLength - 3) + '...'
+  }
+
   return (
     <div className={`bg-slate-800 border-t border-slate-700 ${className}`}>
       {/* Header */}
@@ -140,23 +152,17 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center space-x-2">
-          <Bot className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium text-gray-200">MCP Tools</span>
+          <span className="text-sm font-medium text-gray-200">
+            MCP Tools {isExpanded ? '[-]' : '[+]'}
+          </span>
           {activeMCPTools.length > 0 && (
-            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-              {activeMCPTools.length} active
+            <span className="text-xs text-gray-400">
+              ({activeMCPTools.length} active)
             </span>
           )}
         </div>
-        <div className="flex items-center space-x-2">
-          {activeMCPTools.some(tool => tool.status === 'running') && (
-            <Zap className="w-3 h-3 text-orange-400 animate-pulse" />
-          )}
-          {isExpanded ? (
-            <ChevronDown className="w-4 h-4 text-gray-400" />
-          ) : (
-            <ChevronRight className="w-4 h-4 text-gray-400" />
-          )}
+        <div className="text-xs text-gray-400">
+          {activeMCPTools.some(tool => tool.status === 'running') && 'Running...'}
         </div>
       </div>
 
@@ -165,7 +171,6 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
         <div className="px-4 pb-3 max-h-48 overflow-y-auto">
           {!hasAnyTools ? (
             <div className="text-center py-6 text-gray-500">
-              <Info className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No active MCP tools</p>
               <p className="text-xs opacity-75">Tools will appear here when running</p>
             </div>
@@ -181,38 +186,36 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
                     {activeMCPTools.map((tool) => (
                       <div
                         key={tool.id}
-                        className={`flex items-start space-x-3 p-2 rounded-lg ${getStatusColor(tool.status)}`}
+                        className={`p-2 rounded-lg ${getStatusColor(tool.status)}`}
                       >
-                        <div className="flex-shrink-0 mt-0.5">
-                          {getStatusIcon(tool.status)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium text-gray-200 truncate">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xs text-gray-300">{getStatusText(tool.status)}</span>
+                            <span className="text-sm font-medium text-gray-200 truncate">
                               {tool.name}
-                            </p>
-                            <span className="text-xs text-gray-400 flex-shrink-0">
-                              {formatDuration(tool.startTime)}
                             </span>
                           </div>
-                          {tool.progress && (
-                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">
-                              {tool.progress}
-                            </p>
-                          )}
-                          {tool.metadata?.tool_names && (
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {tool.metadata.tool_names.map((toolName: string, idx: number) => (
-                                <span 
-                                  key={idx}
-                                  className="text-xs bg-slate-700 text-gray-300 px-1.5 py-0.5 rounded"
-                                >
-                                  {toolName}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                          <span className="text-xs text-gray-400 flex-shrink-0">
+                            {formatDuration(tool.startTime)}
+                          </span>
                         </div>
+                        {tool.progress && (
+                          <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                            {tool.progress}
+                          </p>
+                        )}
+                        {tool.metadata?.tool_names && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {tool.metadata.tool_names.map((toolName: string, idx: number) => (
+                              <span 
+                                key={idx}
+                                className="text-xs bg-slate-700 text-gray-300 px-1.5 py-0.5 rounded"
+                              >
+                                {toolName}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -232,7 +235,7 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
                         className="flex items-center justify-between p-2 bg-slate-700/50 rounded"
                       >
                         <div className="flex items-center space-x-2">
-                          {getStatusIcon(tool.status)}
+                          <span className="text-xs text-gray-400">{getStatusText(tool.status)}</span>
                           <span className="text-sm text-gray-300">{tool.name}</span>
                         </div>
                         <span className="text-xs text-gray-500">
@@ -247,6 +250,107 @@ export default function MCPToolsPanel({ className = '', messages = [] }: MCPTool
           )}
         </div>
       )}
+
+      {/* Tool Execution Details Section */}
+      <div className="border-t border-slate-600">
+        {/* Execution Details Header */}
+        <div 
+          className="flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-slate-700 transition-colors"
+          onClick={() => setToolExecutionDetailsExpanded(!toolExecutionDetailsExpanded)}
+        >
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium text-gray-200">
+              Tool Execution Details {toolExecutionDetailsExpanded ? '[-]' : '[+]'}
+            </span>
+            {detailedExecutions.length > 0 && (
+              <span className="text-xs text-gray-400">
+                ({detailedExecutions.length})
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Execution Details Content */}
+        {toolExecutionDetailsExpanded && (
+          <div className="px-4 pb-3 max-h-64 overflow-y-auto">
+            {detailedExecutions.length === 0 ? (
+              <div className="text-center py-4 text-gray-500">
+                <p className="text-xs">No execution details available</p>
+                <p className="text-xs opacity-75">Details will appear when tools run</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {detailedExecutions.map((exec, index) => (
+                  <div
+                    key={exec.id || index}
+                    className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50"
+                  >
+                    {/* Execution Header */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm font-medium text-gray-200">
+                          {exec.displayName}
+                        </span>
+                        {exec.workflow_status && (
+                          <span className={`text-xs px-2 py-0.5 rounded ${
+                            exec.workflow_status === 'completed' ? 'bg-green-600 text-white' :
+                            exec.workflow_status === 'error' ? 'bg-red-600 text-white' :
+                            'bg-orange-600 text-white'
+                          }`}>
+                            {exec.workflow_status}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-gray-400">
+                        {new Date(exec.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+
+                    {/* Execution Content */}
+                    <div className="text-xs text-gray-300 space-y-2">
+                      {/* Show full URL if available */}
+                      {exec.fullUrl && (
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <div className="font-medium text-blue-400 mb-1">URL:</div>
+                          <div className="font-mono text-xs break-all">{exec.fullUrl}</div>
+                        </div>
+                      )}
+
+                      {/* Show tool metadata */}
+                      {exec.workflow_metadata && (
+                        <div className="space-y-1">
+                          {exec.workflow_metadata.tool_names && (
+                            <div>
+                              <span className="font-medium text-yellow-400">Tools:</span>{' '}
+                              {exec.workflow_metadata.tool_names.join(', ')}
+                            </div>
+                          )}
+                          {exec.workflow_metadata.parameters_count && (
+                            <div>
+                              <span className="font-medium text-blue-400">Parameters:</span>{' '}
+                              {exec.workflow_metadata.parameters_count} items
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Show execution content (truncated) */}
+                      {exec.content && (
+                        <div className="text-gray-400">
+                          {exec.content.length > 150 ? 
+                            `${exec.content.substring(0, 150)}...` : 
+                            exec.content
+                          }
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

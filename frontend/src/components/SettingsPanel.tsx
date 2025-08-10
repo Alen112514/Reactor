@@ -149,6 +149,7 @@ export default function SettingsPanel({ isOpen, onClose, sessionId, onSettingsUp
       
       if (result.success) {
         onSettingsUpdated()
+        onClose() // Auto-close panel after successful save
       } else {
         alert('Failed to save preferences: ' + (result.error || 'Unknown error'))
       }

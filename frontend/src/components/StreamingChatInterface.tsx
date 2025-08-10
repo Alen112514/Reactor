@@ -658,33 +658,28 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
     return `${statusIcon} ${stepIcon}`
   }
 
+  const truncateUrl = (text: string) => {
+    // Find URLs in the text and truncate them
+    const urlRegex = /https?:\/\/[^\s)]+/g
+    return text.replace(urlRegex, (url) => {
+      if (url.length > 50) {
+        return url.substring(0, 30) + '...' + url.substring(url.length - 15)
+      }
+      return url
+    })
+  }
+
   const getMessageClassName = (message: Message) => {
-    let baseClass = "max-w-[80%] p-3 rounded-lg"
-    
     switch (message.role) {
       case 'user':
-        return `${baseClass} bg-blue-600 text-white`
+        return "max-w-[80%] p-3 rounded-lg bg-blue-600 text-white"
       case 'system':
-        return `${baseClass} bg-yellow-600 text-white`
       case 'tool':
-        const statusColors = {
-          'starting': 'bg-blue-500',
-          'running': 'bg-orange-500', 
-          'completed': 'bg-green-500',
-          'error': 'bg-red-500'
-        }
-        const statusColor = statusColors[message.tool_status || 'starting'] || 'bg-gray-500'
-        return `${baseClass} ${statusColor} text-white`
       case 'workflow':
-        const workflowStatusColors = {
-          'in_progress': 'bg-purple-500',
-          'completed': 'bg-green-600',
-          'error': 'bg-red-600'
-        }
-        const workflowColor = workflowStatusColors[message.workflow_status || 'in_progress'] || 'bg-purple-500'
-        return `${baseClass} ${workflowColor} text-white ${message.is_streaming ? 'animate-pulse border-2 border-purple-300' : ''}`
+        // Simplified styling for intermediate messages - no colored backgrounds, smaller text
+        return "max-w-[90%] px-2 py-1 text-xs text-gray-400"
       default:
-        return `${baseClass} bg-slate-700 text-white ${message.is_streaming ? 'animate-pulse' : ''}`
+        return "max-w-[80%] p-3 rounded-lg bg-slate-700 text-white"
     }
   }
 
@@ -768,110 +763,26 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
               }`}
             >
               <div className={getMessageClassName(message)}>
-                {/* Workflow step header with icons */}
-                {message.role === 'workflow' && (
-                  <div className="flex items-center space-x-2 mb-2 pb-2 border-b border-white border-opacity-20">
-                    <span className="text-lg">
-                      {getWorkflowStepIcon(message.workflow_step || '', message.workflow_status || 'in_progress')}
-                    </span>
-                    <span className="font-medium text-sm uppercase tracking-wide">
-                      {message.workflow_step?.replace('_', ' ') || 'Workflow Step'}
-                    </span>
-                  </div>
-                )}
-                
+                {/* Simplified content display */}
                 <div className="whitespace-pre-wrap">
-                  {message.content}
+                  {message.role === 'workflow' && message.workflow_step ? 
+                    `${message.workflow_step.replace('_', ' ').toUpperCase()}` :
+                    message.role === 'tool' && message.tool_name ?
+                    `${message.tool_name}` :
+                    message.role === 'user' ? message.content :
+                    truncateUrl(message.content)
+                  }
                   {message.is_streaming && (
                     <span className="inline-block w-2 h-4 bg-current ml-1 animate-blink">|</span>
                   )}
                 </div>
-
-                {/* Enhanced Workflow Step Display */}
-                {message.role === 'workflow' && message.workflow_metadata && (
-                  <div className="mt-3 space-y-2">
-                    {/* Show tool names for workflow steps */}
-                    {message.workflow_metadata.tool_names && (
-                      <div className="text-xs bg-black bg-opacity-20 rounded p-2">
-                        <strong>Tools:</strong> {message.workflow_metadata.tool_names.join(', ')}
-                      </div>
-                    )}
-                    
-                    {/* Show LLM reasoning for llm_to_tools steps */}
-                    {message.workflow_step === 'llm_to_tools' && message.workflow_metadata.llm_reasoning && (
-                      <details className="text-xs">
-                        <summary className="cursor-pointer hover:opacity-80 font-medium">
-                          🧠 LLM Reasoning (click to expand)
-                        </summary>
-                        <div className="mt-2 bg-black bg-opacity-20 rounded p-2 text-gray-300 font-mono text-xs whitespace-pre-wrap">
-                          {message.workflow_metadata.llm_reasoning}
-                        </div>
-                      </details>
-                    )}
-
-                    {/* Show individual tool details */}
-                    {message.workflow_step === 'individual_tool' && message.workflow_metadata && (
-                      <div className="text-xs text-gray-300">
-                        <div>📋 Parameters: {message.workflow_metadata.parameters_count} items</div>
-                        <div>📊 Progress: {message.workflow_metadata.tool_index}/{message.workflow_metadata.total_tools}</div>
-                      </div>
-                    )}
-
-                    {/* Show tools execution summary */}
-                    {message.workflow_step === 'tools_execution' && message.workflow_metadata.tool_calls && (
-                      <details className="text-xs">
-                        <summary className="cursor-pointer hover:opacity-80 font-medium">
-                          🔧 Tool Calls Details (click to expand)
-                        </summary>
-                        <div className="mt-2 space-y-1">
-                          {message.workflow_metadata.tool_calls.map((tc: any, i: number) => (
-                            <div key={i} className="bg-black bg-opacity-20 rounded p-2 text-gray-300">
-                              <strong>{tc.tool}</strong> - {tc.params_keys?.length || 0} parameters
-                              {tc.params_keys && tc.params_keys.length > 0 && (
-                                <div className="text-xs opacity-75 mt-1">
-                                  Params: {tc.params_keys.join(', ')}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    )}
-
-                    {/* General metadata display */}
-                    {(message.workflow_metadata.iteration || message.workflow_metadata.available_tools) && (
-                      <div className="text-xs text-gray-400">
-                        {message.workflow_metadata.iteration && (
-                          <span>Iteration: {message.workflow_metadata.iteration}</span>
-                        )}
-                        {message.workflow_metadata.available_tools && (
-                          <span className="ml-2">Available tools: {message.workflow_metadata.available_tools}</span>
-                        )}
-                      </div>
-                    )}
+                
+                {/* Only show timestamp for non-user messages */}
+                {message.role !== 'user' && (
+                  <div className="text-xs opacity-30 mt-1">
+                    {new Date(message.timestamp).toLocaleTimeString()}
                   </div>
                 )}
-
-                {message.tools_used && message.tools_used.length > 0 && (
-                  <div className="mt-2 text-sm opacity-75">
-                    <strong>Tools used:</strong> {message.tools_used.join(', ')}
-                  </div>
-                )}
-                {message.tool_name && (
-                  <div className="mt-2 text-sm opacity-75">
-                    <strong>Tool:</strong> {message.tool_name} 
-                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                      message.tool_status === 'completed' ? 'bg-green-600' :
-                      message.tool_status === 'error' ? 'bg-red-600' :
-                      'bg-blue-600'
-                    }`}>
-                      {message.tool_status || 'running'}
-                    </span>
-                  </div>
-                )}
-                <div className="text-xs opacity-50 mt-1">
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </div>
               </div>
             </div>
           ))
