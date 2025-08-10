@@ -1,0 +1,1 @@
+# Shared Python types and utilities for MCP Router

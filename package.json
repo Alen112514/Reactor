@@ -1,0 +1,43 @@
+{
+  "name": "mcp-router",
+  "version": "1.0.0",
+  "description": "Universal MCP tool routing layer with intelligent selection and execution",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:lint": "cd frontend && npm run lint",
+    "frontend:typecheck": "cd frontend && npm run typecheck",
+    "backend:dev": "cd backend && ../venv/bin/python -m uvicorn app.main:app --reload",
+    "backend:test": "cd backend && python3 -m pytest",
+    "backend:lint": "cd backend && python3 -m black . && python3 -m isort .",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "k8s:deploy": "kubectl apply -f infrastructure/kubernetes/",
+    "k8s:undeploy": "kubectl delete -f infrastructure/kubernetes/"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0",
+    "python": ">=3.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/mcp-router.git"
+  },
+  "keywords": [
+    "mcp",
+    "routing",
+    "ai",
+    "tool-selection",
+    "vector-search",
+    "workflow-orchestration",
+    "python",
+    "fastapi"
+  ],
+  "license": "MIT"
+}

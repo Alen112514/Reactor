@@ -1,0 +1,27 @@
+# Minimal requirements for testing SQLite setup
+# Use this if the full requirements.txt has dependency conflicts
+
+# Core Framework (Required)
+fastapi>=0.104.0,<1.0.0
+uvicorn[standard]>=0.24.0,<1.0.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
+
+# Database (Required)
+sqlalchemy>=2.0.0,<3.0.0
+alembic>=1.13.0,<2.0.0
+aiosqlite>=0.19.0,<1.0.0
+
+# Basic utilities (Required)
+python-dotenv>=1.0.0,<2.0.0
+loguru>=0.7.0,<1.0.0
+
+# HTTP Client (Required for LLM providers)
+httpx>=0.25.0,<1.0.0
+
+# LLM Providers (Required)
+openai>=1.30.0,<2.0.0
+
+# Development/Testing
+pytest>=7.4.0,<8.0.0
+pytest-asyncio>=0.21.0,<1.0.0

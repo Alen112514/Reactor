@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mcp-router
+  labels:
+    name: mcp-router
+    app: mcp-router

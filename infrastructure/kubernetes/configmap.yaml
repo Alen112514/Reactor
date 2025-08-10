@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-router-config
+  namespace: mcp-router
+data:
+  # API Configuration
+  API_PORT: "8000"
+  API_HOST: "0.0.0.0"
+  
+  # Database Configuration
+  DATABASE_URL: "sqlite:///./data/mcp_router.db"
+  DATABASE_ECHO: "false"
+  
+  # Redis Configuration
+  REDIS_URL: "redis://redis:6379"
+  
+  # Weaviate Configuration
+  WEAVIATE_URL: "http://weaviate:8080"
+  
+  # Observability Configuration
+  ENABLE_TRACING: "true"
+  JAEGER_HOST: "jaeger"
+  JAEGER_PORT: "6831"
+  
+  # Cost Guardrails
+  DEFAULT_DAILY_BUDGET: "100.00"
+  DEFAULT_MONTHLY_BUDGET: "1000.00"
+  TOKEN_COST_PER_1K_GPT4: "0.03"
+  TOKEN_COST_PER_1K_GPT3: "0.002"
+  
+  # Tool Indexing
+  INDEXING_SCHEDULE: "0 */6 * * *"
+  MAX_PARALLEL_CONNECTIONS: "10"
+  TOOL_CACHE_TTL: "3600"
+  
+  # Semantic Router
+  DEFAULT_K_VALUE: "5"
+  SIMILARITY_THRESHOLD: "0.7"
+  CONFIDENCE_THRESHOLD: "0.8"
+  
+  # Execution Planner
+  MAX_PARALLEL_TOOLS: "10"
+  DEFAULT_TIMEOUT_MS: "30000"
+  MAX_RETRY_ATTEMPTS: "3"
+  
+  # Self Evaluation
+  EVALUATION_SCHEDULE: "0 2 * * *"
+  REPLAY_SAMPLE_SIZE: "100"
+  THRESHOLD_UPDATE_FREQUENCY: "weekly"
+  
+  # Environment
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"

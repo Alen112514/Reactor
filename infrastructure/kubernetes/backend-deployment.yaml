@@ -1,0 +1,174 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-router-backend
+  namespace: mcp-router
+  labels:
+    app: mcp-router-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mcp-router-backend
+  template:
+    metadata:
+      labels:
+        app: mcp-router-backend
+    spec:
+      containers:
+      - name: backend
+        image: mcp-router-backend:latest
+        ports:
+        - containerPort: 8000
+        env:
+        # Environment variables from ConfigMap
+        - name: API_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: API_PORT
+        - name: API_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: API_HOST
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: DATABASE_URL
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: REDIS_URL
+        - name: WEAVIATE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: WEAVIATE_URL
+        - name: ENABLE_TRACING
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: ENABLE_TRACING
+        - name: DEFAULT_K_VALUE
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: DEFAULT_K_VALUE
+        - name: SIMILARITY_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: mcp-router-config
+              key: SIMILARITY_THRESHOLD
+        # Secrets
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-router-secrets
+              key: SECRET_KEY
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-router-secrets
+              key: OPENAI_API_KEY
+        - name: COHERE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-router-secrets
+              key: COHERE_API_KEY
+        - name: HUGGINGFACE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mcp-router-secrets
+              key: HUGGINGFACE_API_KEY
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: mcp-router-secrets
+              key: CELERY_BROKER_URL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: sqlite-storage
+          mountPath: /app/data
+      volumes:
+      - name: sqlite-storage
+        persistentVolumeClaim:
+          claimName: sqlite-pvc
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-router-backend-service
+  namespace: mcp-router
+  labels:
+    app: mcp-router-backend
+spec:
+  selector:
+    app: mcp-router-backend
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  type: ClusterIP
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mcp-router-backend-hpa
+  namespace: mcp-router
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mcp-router-backend
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlite-pvc
+  namespace: mcp-router
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
