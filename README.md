@@ -562,6 +562,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for the AI automation community**
 
-[⭐ Star us on GitHub](https://github.com/your-org/mcp-router) | [🐦 Follow on Twitter](https://twitter.com/mcprouter) | [📧 Newsletter](https://mcp-router.com/newsletter)
+[⭐ Star us on GitHub](https://github.com/Alen112514/Reactor) |
 
 </div>
