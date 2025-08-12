@@ -1,4 +1,4 @@
-# MCP Universal Router
+# REACTOR
 
 > **Intelligent AI-Powered Tool Selection & Execution Platform**
 
@@ -8,11 +8,25 @@
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6.svg)](https://www.typescriptlang.org/)
 
-**MCP Universal Router** is a sophisticated AI-powered platform that intelligently selects and orchestrates the right tools for any task. Built on the Model Context Protocol (MCP), it provides semantic tool discovery, real-time browser automation, and streaming execution with an intuitive split-screen interface.
+## 🎬 Live Demo
+
+**See REACTOR in action!** Watch the 28-second demo showcasing intelligent tool selection, real-time streaming, and browser automation with split-screen functionality.
+
+<div align="center">
+
+![REACTOR Demo](./assets/demo.gif)
+
+*Demo highlights: Semantic tool selection → Real-time execution → Browser automation → Split-screen interface*
+
+</div>
 
 ---
 
-## **Why MCP Universal Router?**
+**REACTOR** is a sophisticated AI-powered platform that intelligently selects and orchestrates the right tools for any task. Built on the Model Context Protocol (MCP), it provides semantic tool discovery, real-time browser automation, and streaming execution with an intuitive split-screen interface.
+
+---
+
+## **Why REACTOR?**
 
 **Intelligent Tool Selection** - Vector-based semantic search automatically finds the most relevant tools for your query  
 **Real-Time Streaming** - Watch tools execute live with WebSocket-powered updates  
@@ -105,8 +119,8 @@ User Query → Semantic Router → Tool Indexer → Execution Planner → LLM Pr
 ### **1. Clone and Setup**
 
 ```bash
-git clone https://github.com/your-org/mcp-router.git
-cd mcp-router
+git clone https://github.com/Alen112514/Reactor.git
+cd Reactor
 
 # Setup Python virtual environment
 python3 -m venv venv
@@ -362,7 +376,7 @@ docker-compose down
 kubectl apply -f infrastructure/kubernetes/
 
 # Check deployment status
-kubectl get pods -n mcp-router
+kubectl get pods -n reactor
 
 # Scale deployment
 kubectl scale deployment backend --replicas=3
@@ -551,10 +565,10 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## **Support**
 
-- **Documentation**: [docs.mcp-router.com](https://docs.mcp-router.com)
-- **Issues**: [GitHub Issues](https://github.com/your-org/mcp-router/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/mcp-router/discussions)
-- **Discord**: [Join our community](https://discord.gg/mcp-router)
+- **Documentation**: [docs.reactor.com](https://docs.reactor.com)
+- **Issues**: [GitHub Issues](https://github.com/Alen112514/Reactor/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Alen112514/Reactor/discussions)
+- **Discord**: [Join our community](https://discord.gg/reactor)
 
 ---
 
