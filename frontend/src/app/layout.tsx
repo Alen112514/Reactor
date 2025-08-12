@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MCP Router - AI Agent Interface",
+  title: "REACTOR - AI Agent Interface",
   description: "Universal MCP tool routing layer with intelligent selection and execution",
 };
 

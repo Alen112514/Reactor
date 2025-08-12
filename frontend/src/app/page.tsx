@@ -26,7 +26,7 @@ export default function Home() {
     return (
       <div className="flex h-screen w-screen bg-slate-900 text-white items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">MCP Router</h1>
+          <h1 className="text-4xl font-bold mb-4">REACTOR</h1>
           <p className="text-xl text-gray-300 mb-8">AI Agent Interface Loading...</p>
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
         </div>

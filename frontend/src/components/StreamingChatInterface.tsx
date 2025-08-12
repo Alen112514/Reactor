@@ -473,7 +473,7 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
           setMessages([{
             id: 'setup-' + Date.now(),
             role: 'system',
-            content: `Welcome to MCP Router! 🚀\n\nTo get started, you'll need to:\n${!result.data.has_preferences ? '• Configure your LLM preferences\n' : ''}${!result.data.has_preferred_key ? '• Add API keys for your preferred provider\n' : ''}Click the settings icon (⚙️) in the top right to configure your account.`,
+            content: `Welcome to REACTOR!\n\nTo get started, you'll need to:\n${!result.data.has_preferences ? '• Configure your LLM preferences\n' : ''}${!result.data.has_preferred_key ? '• Add API keys for your preferred provider\n' : ''}Click the settings icon (⚙️) in the top right to configure your account.`,
             timestamp: new Date().toISOString()
           }])
         }
@@ -688,7 +688,7 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
         <div className="flex items-center space-x-3">
-          <h1 className="text-2xl font-bold">MCP Router</h1>
+          <h1 className="text-2xl font-bold">REACTOR</h1>
           {connectionStatus === 'connected' && (
             <div className="flex items-center space-x-1">
               <Activity className="w-4 h-4 text-green-400" />
@@ -723,9 +723,9 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
               <button
                 onClick={simulateBrowserAction}
                 className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors text-white text-xs"
-                title="🚀 Simulate Browser Action"
+                title="Simulate Browser Action"
               >
-                🚀
+                Simulate
               </button>
             </>
           )}
@@ -750,7 +750,7 @@ export default function StreamingChatInterface({ sessionId }: StreamingChatInter
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
           <div className="text-center text-gray-400 mt-8">
-            <h2 className="text-xl mb-2">Welcome to MCP Router! 🚀</h2>
+            <h2 className="text-xl mb-2">Welcome to REACTOR!</h2>
             <p>Your AI agent interface with real-time streaming.</p>
             <p className="mt-2 text-sm">Type a message below to see live responses.</p>
           </div>
